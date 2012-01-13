@@ -1,1 +1,1 @@
-Sampla web app with clojure. Based on compojure and enlive.
+Web application to browse all java jars and classes in the maven repo. Based on a REST service provided by alljavaclasses.com.
