@@ -25,13 +25,17 @@
   [subs svc root]
   [:a ] (do->
           (content subs)
-          (set-attr :href subs)))
+          (set-attr :href (str svc root "/" subs))))
+
+(def LIBSOURCE "http://alljavaclasses.com/libsource/maven/central/")
 
 (defsnippet do-artifacts "brosor/browse-page.html" *artifacts-links*
-  [subs]
+  [v svc]
   [:a ] (do->
-          (content subs)
-          (set-attr :href subs)))
+          (content (str (:packageId v) ":" (:artifactId v) ":" (:version v)))
+          (set-attr :href (str LIBSOURCE
+                            (:packageId v) "/" (:artifactId v) "/" (:version v)))
+          ))
 
 ;(println "link-model:")
 ;(pprint (apply str (emit* (link-model (:subGroups data)))))
@@ -43,16 +47,23 @@
 
 (deftemplate browse-page "brosor/browse-page.html"
   [svc listResult]
-  *subgroups-links* (content (map #(do-subgroups % svc (:root listResult)) (:subGroups listResult)))
-  *artifacts-links* (content (map #(do-artifacts %) (:artifacts listResult)))
+  *subgroups-links* (content (map #(do-subgroups % svc (:root listResult)) (:subgroups listResult)))
+  *artifacts-links* (content (map #(do-artifacts % svc) (:versions listResult)))
 
-  [:div#subgroups ] (if-let [x (:subGroups listResult)] identity retnil)
-  [:div#artifacts ] (if-let [x (:artifacts listResult)] identity retnil)
+  [:div#subgroups ] (if-let [x (:subgroups listResult)] identity retnil)
+  [:div#artifacts ] (if-let [x (:versions listResult)] identity retnil)
+  [:span#root ] (content (:root listResult))
+  [:p#raw ] (content listResult)
   )
 
 ;(println "PAGE:")
 ;(println (browse-page1 data))
 
+(deftemplate view-raw "brosor/browse-page.html"
+  [listResult]
+
+  [:p#raw ] (content listResult)
+  )
 
 
 
