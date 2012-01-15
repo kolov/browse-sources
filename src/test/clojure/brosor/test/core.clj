@@ -1,5 +1,5 @@
-(ns pwc.test.core
-  (:use [pwc.core])
+(ns brosor.test.core
+  (:use [brosor.core])
   (:use [clojure.test]))
 
 (deftest replace-me
