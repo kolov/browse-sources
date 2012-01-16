@@ -1,15 +1,11 @@
 (ns brosor.render
-  (:use [net.cgrand.enlive-html])
+  (:use [net.cgrand.enlive-html :as h])
   (:use [clojure.pprint])
   )
 
 
 (def browse-layout (html-resource "brosor/browse-page.html"))
 
-
-(def data {:subGroups ["abbot" "acegisecurity" "activation"]
-           :artifacts ["xx"]
-           })
 
 
 (def *subgroups-head* [:div#subgroups :.sectionTitle ])
@@ -21,47 +17,37 @@
 ;(pprint (select browse-layout *subgroups-links*))
 
 
-(defsnippet do-subgroups "brosor/browse-page.html" *subgroups-links*
+(h/defsnippet do-subgroups "brosor/browse-page.html" *subgroups-links*
   [subs svc root]
-  [:a ] (do->
-          (content subs)
-          (set-attr :href (str svc root "/" subs))))
+  [:a ] (h/do->
+          (h/content subs)
+          (h/set-attr :href (str svc root "/" subs))))
 
 (def LIBSOURCE "http://alljavaclasses.com/libsource/maven/central/")
 
-(defsnippet do-artifacts "brosor/browse-page.html" *artifacts-links*
+(h/defsnippet do-artifacts "brosor/browse-page.html" *artifacts-links*
   [v svc]
-  [:a ] (do->
-          (content (str (:packageId v) ":" (:artifactId v) ":" (:version v)))
-          (set-attr :href (str LIBSOURCE
+  [:a ] (h/do->
+          (h/content (str (:packageId v) ":" (:artifactId v) ":" (:version v)))
+          (h/set-attr :href (str LIBSOURCE
                             (:packageId v) "/" (:artifactId v) "/" (:version v)))
           ))
 
-;(println "link-model:")
-;(pprint (apply str (emit* (link-model (:subGroups data)))))
-
-;(println "map:")
-;(pprint (map #(link-model %) (:subGroups data)))
-
 (defn retnil [x] nil)
 
-(deftemplate browse-page "brosor/browse-page.html"
+(h/deftemplate browse-page "brosor/browse-page.html"
   [svc listResult]
-  *subgroups-links* (content (map #(do-subgroups % svc (:root listResult)) (:subgroups listResult)))
-  *artifacts-links* (content (map #(do-artifacts % svc) (:versions listResult)))
+  *subgroups-links* (h/content (map #(do-subgroups % svc (:root listResult)) (:subgroups listResult)))
+  *artifacts-links* (h/content (map #(do-artifacts % svc) (:versions listResult)))
 
   [:div#subgroups ] (if-let [x (:subgroups listResult)] identity retnil)
   [:div#artifacts ] (if-let [x (:versions listResult)] identity retnil)
-  [:span#root ] (content (:root listResult))
-  [:p#raw ] (content listResult)
+  [:span#root ] (h/content (:root listResult))
+  [:p#raw ] (h/content listResult)
   )
 
-;(println "PAGE:")
-;(println (browse-page1 data))
-
-(deftemplate view-raw "brosor/browse-page.html"
+(h/deftemplate view-raw "brosor/browse-page.html"
   [listResult]
-
   [:p#raw ] (content listResult)
   )
 
