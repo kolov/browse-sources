@@ -4,7 +4,8 @@
                  [org.clojure/clojure-contrib "1.2.0"]
                  [compojure "0.6.2"]
                  [ring/ring-core "0.3.7"]
-                 [ring/ring-jetty-adapter "0.3.7"]]
+                 [ring/ring-jetty-adapter "0.3.7"]
+                 [clj-stacktrace "0.2.4"]]
   :dev-dependencies [[ring/ring-devel "0.3.7"]
                      [lein-ring "0.4.0"]]
   :ring {:handler hello-clojure-web.core/app})

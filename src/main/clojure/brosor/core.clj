@@ -13,20 +13,28 @@
 
 
 
-;(def SVC "http://service.alljavaclasses.com/service/list/")
-(def SVC "http://alljavaclasses.com/service/list/")
-(def SITE "/browse/")
-(def REPO "maven/central")
 
-(defn read-dir [s] (client/get (str SVC s)))
+(def params {:SVC-LIST "http://service.alljavaclasses.com/list/" ; Service URL
+             :SVC-SRC "http://service.alljavaclasses.com/source/" ; Service URL
+             :REPO "maven/central" ; initial repo to start browsing from
+             })
 
-(defn list-dir [s] (json/decode (:body (read-dir s))))
+(defn svc-call [s] (do (println "service=" s) (:body (client/get s))))
+
+(defn list-txt "Calls service and returns text response " [{svc :SVC-LIST} s] (svc-call (str svc s)))
+
+(defn list-json "Calls service and gets json response" [params s] (json/decode (list-txt params s)))
+
+(defn query-list [s] (list-json params s))
+(defn query-src [s] (svc-call (str (:SVC-SRC params) s "?format=text")))
+
+(defn echo [x] (do (println x) x))
 
 (defroutes browse-routes
-  (GET "/browse/*" [:as r] (r/browse-page SITE (list-dir (subs (:uri r) (count "/browse/")))))
-  (GET "/raw" [] (r/view-raw (list-dir REPO)))
+  (GET "/browse/*" [:as req] (r/browse-page (:uri req) (echo (query-list (subs (:uri req) (count "/browse/"))))))
+  (GET "/source/*" [:as req] (r/source-page (:uri req) (query-src (subs (:uri req) (count "/source/")))))
   (GET "/req/*" [:as r] {:body (:uri r)})
-  ;  (route/not-found {:status 404 :body "<h1>Page not found</h1>"})
+  ;  (route/not-found  { :body "<h1>Page not found</h1>"})
   )
 
 (wrap! browse-routes :session )
@@ -39,4 +47,4 @@
   (ring/run-jetty (var application) {:port port :join? false}))
 
 #_ "Comment the following line if building a WAR"
-(start 9900)
+;(start 9900)
