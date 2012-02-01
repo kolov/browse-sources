@@ -1,1 +1,3 @@
 Web application to browse all java jars and classes in the maven repo. Based on a REST service provided by alljavaclasses.com.
+
+Deployed at http://browse-repo.herokuapp.com/browse/maven/central
