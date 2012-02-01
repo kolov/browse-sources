@@ -34,7 +34,7 @@
   (GET "/browse/*" [:as req] (r/browse-page (:uri req) (echo (query-list (subs (:uri req) (count "/browse/"))))))
   (GET "/source/*" [:as req] (r/source-page (:uri req) (query-src (subs (:uri req) (count "/source/")))))
   (GET "/req/*" [:as r] {:body (:uri r)})
-  ;  (route/not-found  { :body "<h1>Page not found</h1>"})
+  (route/not-found  "<h1>Page not found</h1> <br/> Go <a href=\"/browse/maven/central\"> browse jars and classes on maven central</a>")
   )
 
 (wrap! browse-routes :session )
@@ -46,5 +46,5 @@
 (defn start [port]
   (ring/run-jetty (var application) {:port port :join? false}))
 
-#_ "Comment the following line if building a WAR"
-;(start 9900)
+(defn -main [port]
+  (ring/run-jetty application {:port (Integer. port)}))
