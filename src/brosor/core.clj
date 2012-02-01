@@ -4,8 +4,6 @@
   (:require [compojure.route :as route]
             [compojure.handler :as handler]
             [ring.adapter.jetty :as ring]
-            [hiccup.core :as h]
-            [hiccup.form-helpers :as fh]
             [brosor.render :as r]
             [clj-http.client :as client]
             [org.danlarkin.json :as json]
